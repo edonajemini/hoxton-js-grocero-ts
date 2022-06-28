@@ -1,5 +1,17 @@
 import './reset.css'
 import './style.css'
+
+
+type storeItem = {
+  id: number,
+  name: string,
+  price: number,
+  stock: number,
+  inCart: number,
+}
+type state = {
+  storeItem: storeItem[]
+}
 let state = {
   storeItems: [
     {
@@ -84,8 +96,6 @@ function getCartItems() {
   return state.storeItems.filter(item => item.inCart > 0)
 }
 
-function getTotal() {}
-
 function increaseQuantity(item) {
   if (item.stock === 0) return
 
@@ -164,17 +174,41 @@ function renderCartItems() {
     })
 
     cartLi.append(itemImg, itemNameP, removeBtn, quantitySpan, addBtn)
-    cartUl.append(cartLi)
+    cartUl.appendChild(cartLi)
   }
 }
 
+function getTotal() {
+  let total = 0 
+  let items = getCartItems()
+  for (let item of items) {
+    total += item.price * item.inCart
+  }
+  return total
+}
+
 function renderTotal() {
+  let total = getTotal().toFixed(2)
+  let totalEl = document.querySelector('.total-number')
+  totalEl.textContent = `£${total}`
+}
+
+function putEverythingInTheCart(){
+  let feelingGenerousEl = document.querySelector('.feeling-generous')
+  feelingGenerousEl.addEventListener('click', function (){
+    for (let item of state.storeItems) {
+      if(item.inCart = item.stock)
+      item.stock = 0
+    }
+    render()
+  }, {once: true})
 }
 
 function render() {
   renderStoreItems()
   renderCartItems()
   renderTotal()
+  putEverythingInTheCart()
 }
 
 render()
